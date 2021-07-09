@@ -3,9 +3,9 @@ import ReviewModel from "../models/reviews.js"
 
 export const getSingleProductReviews = (req, res, next) => {
     try {
-        const reviews = product.reviews
-        console.log(res.reviews);
-        res.send(res.reviews)
+        const reviews = res.reviews
+        console.log(reviews);
+        res.send(reviews)
         
     } catch (error) {
         next(createError(500, 'Generic server error'))
@@ -33,7 +33,15 @@ export const editReview = async (req, res, next) => {
                 runValidators:true
             }
             )
-    } catch (error) {
+
+            if(editedReview){
+                res.send(editedReview)
+            }
+            else{
+                next(createError(404, `Review with id: ${reviewId} not found`))
+            }
+    } 
+    catch (error) {
         next(createError(500,'Generic server error'))
     }
 }
