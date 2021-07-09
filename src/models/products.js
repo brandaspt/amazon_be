@@ -7,6 +7,7 @@ const reqString = { type: String, required: true }
 const ProductSchema = new Schema(
   {
     name: reqString,
+    reviews: [{ type: Schema.Types.ObjectId, ref: "Review" }],
     description: reqString,
     brand: reqString,
     imageURL: {

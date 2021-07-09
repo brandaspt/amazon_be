@@ -1,7 +1,13 @@
 import createError from "http-errors"
+import q2m from "query-to-mongo"
+
 import ProductModel from "../models/products.js"
 
 export const getAllProducts = async (req, res, next) => {
+  console.log(req.query)
+  const query = q2m(req.query)
+  query.options.limit = 1
+  query.options.offset = 0
   try {
     const products = await ProductModel.find()
     res.json(products)
@@ -11,7 +17,7 @@ export const getAllProducts = async (req, res, next) => {
 }
 export const getSingleProduct = async (req, res, next) => {
   try {
-    const product = await ProductModel.findById(req.params.prodId)
+    const product = await ProductModel.findById(req.params.prodId).populate("reviews")
     if (!product) return res.status(404).json({ message: `Product with id ${req.params.prodId} not found` })
     res.json(product)
   } catch (error) {
@@ -48,6 +54,12 @@ export const deleteProduct = async (req, res, next) => {
   }
 }
 export const uploadProductImage = async (req, res, next) => {
+  const update = { imageURL: req.file.path }
   try {
-  } catch (error) {}
+    const updatedProd = await ProductModel.findByIdAndUpdate(req.params.prodId, update, { new: true })
+    if (!updatedProd) return res.status(404).json({ message: `Product with id ${req.params.prodId} not found` })
+    res.json(updatedProd)
+  } catch (error) {
+    res.json(error)
+  }
 }
