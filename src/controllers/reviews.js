@@ -1,10 +1,11 @@
 import createError from "http-errors"
 import ReviewModel from "../models/reviews.js" 
+import { getSingleProduct } from "../controllers/products.js"
 
 export const getSingleProductReviews = (req, res, next) => {
     try {
-        const reviews = res.reviews
-        console.log(reviews);
+        const product = getSingleProduct
+        const reviews = product.reviews
         res.send(reviews)
         
     } catch (error) {
