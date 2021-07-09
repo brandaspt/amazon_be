@@ -1,11 +1,13 @@
 import createError from "http-errors"
 import ReviewModel from "../models/reviews.js" 
+import ProductModel from "../models/products.js"
+import { getSingleProduct } from "../controllers/products.js"
 
 export const getSingleProductReviews = (req, res, next) => {
     try {
+        const product = getSingleProduct()
         const reviews = product.reviews
-        console.log(res.reviews);
-        res.send(res.reviews)
+        res.send(reviews)
         
     } catch (error) {
         next(createError(500, 'Generic server error'))
@@ -14,8 +16,15 @@ export const getSingleProductReviews = (req, res, next) => {
 
 export const postProductReview = async (req, res, next) => {
     try {
+        const product = getSingleProduct()
+        console.log(product);
         const newReview = new ReviewModel(req.body)
         const {_id} = await newReview.save()
+        await ProductModel.findByIdAndUpdate(req.params.prodId, {
+            $push:{
+                reviews:_id
+            }
+        })
         res.status(201).send({_id})
         
     } catch (error) {
@@ -33,7 +42,15 @@ export const editReview = async (req, res, next) => {
                 runValidators:true
             }
             )
-    } catch (error) {
+
+            if(editedReview){
+                res.send(editedReview)
+            }
+            else{
+                next(createError(404, `Review with id: ${reviewId} not found`))
+            }
+    } 
+    catch (error) {
         next(createError(500,'Generic server error'))
     }
 }
