@@ -10,6 +10,11 @@ router.get("/:prodId", validateObjectId, Controllers.getSingleProduct)
 router.post("/", Controllers.addNewProduct)
 router.put("/:prodId", validateObjectId, Controllers.editProduct)
 router.delete("/:prodId", validateObjectId, Controllers.deleteProduct)
-router.post("/:prodId/uploadImage", validateObjectId, prodImgParser.single("prodImg"), Controllers.uploadProductImage)
+router.post(
+  "/:prodId/uploadImage",
+  validateObjectId,
+  prodImgParser.single("prodImg"),
+  Controllers.uploadProductImage
+)
 
 export default router
