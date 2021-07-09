@@ -1,5 +1,6 @@
 import express from "express"
 import * as Controller from "../../controllers/cart.js"
+import { validateObjectId } from "../sharedMiddlewares.js"
 
 const router = express.Router()
 
@@ -13,6 +14,6 @@ router.get("/history", Controller.getCartHistory)
 router.put("/status", Controller.updateCartStatus)
 
 // Update Cart product
-router.put("/:prodId", Controller.updateCartProducts)
+router.put("/:prodId", validateObjectId, Controller.updateCartProducts)
 
 export default router
