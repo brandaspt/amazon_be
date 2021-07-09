@@ -1,9 +1,10 @@
 import Cart from "../models/cart.js"
 import CreateError from "http-errors"
+import Product from "../models/products.js"
 
 export const getCart = async (req, res, next) => {
   try {
-    const activeCart = await Cart.findOne({ status: "active" })
+    const activeCart = await Cart.findOne({ status: "active" }).populate("products.product")
     if (activeCart) {
       res.send(activeCart)
     } else {
@@ -17,7 +18,7 @@ export const getCart = async (req, res, next) => {
 
 export const getCartHistory = async (req, res, next) => {
   try {
-    const cartHistory = await Cart.find({ status: { $ne: "active" } })
+    const cartHistory = await Cart.find({ status: { $ne: "active" } }).populate("products.product")
     res.send(cartHistory)
   } catch (error) {
     next(error)
@@ -26,11 +27,9 @@ export const getCartHistory = async (req, res, next) => {
 
 export const updateCartProducts = async (req, res, next) => {
   try {
-    // const prodId = req.params.prodId
-    // const product = await Product.findById(prodId)
-    console.log("hello")
-    req.body.quantity = 5
-    const product = { _id: "hello" }
+    const prodId = req.params.prodId
+    const product = await Product.findById(prodId)
+
     if (product) {
       const newProduct = {
         product: { ...product.toObject() },
@@ -53,10 +52,7 @@ export const updateCartProducts = async (req, res, next) => {
           }
         )
       } else {
-        await Cart.findOneAndUpdate(
-          { status: "active" },
-          { $push: { products: newProduct } }
-        )
+        await Cart.findOneAndUpdate({ status: "active" }, { $push: { products: newProduct } })
       }
     } else {
       next(CreateError(404, "Product not found"))
