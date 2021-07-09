@@ -1,10 +1,11 @@
 import createError from "http-errors"
 import ReviewModel from "../models/reviews.js" 
+import ProductModel from "../models/products.js"
 import { getSingleProduct } from "../controllers/products.js"
 
 export const getSingleProductReviews = (req, res, next) => {
     try {
-        const product = getSingleProduct
+        const product = getSingleProduct()
         const reviews = product.reviews
         res.send(reviews)
         
@@ -15,8 +16,15 @@ export const getSingleProductReviews = (req, res, next) => {
 
 export const postProductReview = async (req, res, next) => {
     try {
+        const product = getSingleProduct()
+        console.log(product);
         const newReview = new ReviewModel(req.body)
         const {_id} = await newReview.save()
+        await ProductModel.findByIdAndUpdate(req.params.prodId, {
+            $push:{
+                reviews:_id
+            }
+        })
         res.status(201).send({_id})
         
     } catch (error) {

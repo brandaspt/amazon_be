@@ -6,7 +6,7 @@ const router = express.Router();
 
 router.get("/:prodId", validateObjectId, Controllers.getSingleProductReviews);
 
-router.post("/", Controllers.postProductReview);
+router.post("/:prodId", validateObjectId, Controllers.postProductReview);
 
 router.put("/:reviewId", validateObjectId, Controllers.editReview);
 
