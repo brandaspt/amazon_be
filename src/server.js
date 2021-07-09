@@ -6,6 +6,7 @@ import morgan from "morgan"
 import productsRouter from "./services/products/products.js"
 import reviewsRouter from "./services/reviews/reviews.js"
 import cartRouter from "./services/cart/cart.js"
+import { validateObjectId } from "./services/sharedMiddlewares.js"
 
 const server = express()
 const PORT = process.env.PORT || 3001
@@ -17,6 +18,7 @@ server.use(express.json())
 server.use(morgan("dev"))
 
 // ### ENDPOINTS ###
+
 server.use("/products", productsRouter)
 server.use("/reviews", reviewsRouter)
 server.use("/cart", cartRouter)
