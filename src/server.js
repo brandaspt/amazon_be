@@ -6,6 +6,7 @@ import morgan from "morgan"
 import productsRouter from "./services/products/products.js"
 import reviewsRouter from "./services/reviews/reviews.js"
 import cartRouter from "./services/cart/cart.js"
+import { errorHandler } from "./errorHandlers.js"
 
 const server = express()
 const PORT = process.env.PORT || 3001
@@ -23,6 +24,7 @@ server.use("/reviews", reviewsRouter)
 server.use("/cart", cartRouter)
 
 // ### ERROR HANDLERS ###
+server.use(errorHandler)
 
 // ### DATABSE ###
 mongoose
@@ -32,4 +34,4 @@ mongoose
     useFindAndModify: false,
   })
   .then(() => server.listen(PORT, () => console.log("Server listening on port " + PORT)))
-  .catch((err) => console.log(err))
+  .catch(err => console.log(err))
