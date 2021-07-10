@@ -30,7 +30,8 @@ export const addNewProduct = async (req, res, next) => {
   const productData = { ...req.body }
   const newProduct = new ProductModel(productData)
   try {
-    await newProduct.save()
+    const test = await newProduct.save()
+    console.log(test)
     res.status(201).json(newProduct)
   } catch (error) {
     next(createError(500))
@@ -56,6 +57,7 @@ export const deleteProduct = async (req, res, next) => {
   }
 }
 export const uploadProductImage = async (req, res, next) => {
+  console.log(req.file)
   const update = { imageURL: req.file.path }
   try {
     const updatedProd = await ProductModel.findByIdAndUpdate(req.params.prodId, update, { new: true })
