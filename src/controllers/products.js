@@ -4,8 +4,7 @@ import q2m from "query-to-mongo"
 import ProductModel from "../models/products.js"
 
 export const getAllProducts = async (req, res, next) => {
-  const query = q2m(req.query, { maxLimit: 2 })
-  console.log(query)
+  const query = q2m(req.query, { maxLimit: 25 })
   try {
     const products = await ProductModel.find(query.criteria, query.options.fields)
       .skip(query.options.skip)
